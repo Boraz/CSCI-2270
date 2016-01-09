@@ -1,0 +1,57 @@
+# Make file for HW4, CSCI2270
+# WRITTEN BY: Elizabeth White
+#
+# This makefile is used as follows to regenerate files for the binary_search_tree program:
+#   make binary_search_tree.o   --  Regenerates binary_search_tree.o by compiling
+#   make bstree_test.o   --  Regenerates bstree_test.o by compiling
+#   make bstree_test --  Regenerates the executable bstree_test file by compiling
+#   make              --  Same as "make bstree_test" (since bstree_test is 
+#                     --  the 1st target)
+#   make bstree_exam.o   --  Regenerates bstree_exam.o by compiling
+#   make bstree_exam --  Regenerates the executable bstree_exam file by compiling
+#   make              --  Same as "make bstree_exam" (since bstree_exam is 
+#                     --  the 1st target)
+#
+# Two special targets may also be used with this makefile:
+#   make all          --  Regenerates all files listed above
+#   make clean        --  Erases all files listed above
+#
+# All compilations occur with -Wall to print warnings, and -g to allow gdb debugging.
+# The clean command uses rm to remove all expendable files (rm is part of
+# the cs1300 compiler tools from www.cs.colorado.edu/~main/cs1300/README.html).
+
+# define the different outputs of all g++ commands
+# on Ubuntu, the .exe suffix disappears
+EXPENDABLES = bstree_test.o bstree_test bstree_exam.o bstree_exam bintree.o binary_search_tree.o
+
+# make all is listed first, which lets you type "make" to recompile 
+# anything that has changed in either your class, your test code, 
+# or my test code.
+all:
+	@make $(EXPENDABLES)
+
+bintree.o: bintree.cpp bintree.h
+	g++ -Wall -std=c++0x -g -c bintree.cpp -o bintree.o
+
+binary_search_tree.o: binary_search_tree.cpp binary_search_tree.h bintree.h
+	g++ -Wall -std=c++0x -g -c binary_search_tree.cpp -o binary_search_tree.o
+	
+# this compiles your test program and your binary_search_tree class together
+bstree_test: bstree_test.o binary_search_tree.o bintree.o
+	g++ -Wall -std=c++0x -g bstree_test.o bintree.o binary_search_tree.o  -o bstree_test 
+
+# this compiles your test program and your binary_search_tree class together
+bstree_exam: bstree_exam.o binary_search_tree.o bintree.o
+	g++ -Wall -std=c++0x -g bstree_exam.o bintree.o binary_search_tree.o -o bstree_exam 
+
+# this compiles your test program, which is executable
+bstree_test.o: binary_search_tree.h binary_search_tree.cpp bstree_test.cpp bintree.h
+	g++ -Wall -std=c++0x -g -c bstree_test.cpp -o bstree_test.o
+
+# this compiles your test program, which is executable
+bstree_exam.o: binary_search_tree.h binary_search_tree.cpp bstree_exam.cpp bintree.h 
+	g++ -Wall -std=c++0x -g -c bstree_exam.cpp -o bstree_exam.o
+
+# this deletes all the output files
+clean:
+	rm $(EXPENDABLES)

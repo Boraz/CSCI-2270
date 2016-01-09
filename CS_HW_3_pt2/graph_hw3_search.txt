@@ -1,0 +1,64 @@
+bool graph::depth_first_search(vertex* u, map<vertex*, bool>& visited, deque<vertex *>& yet_to_explore, map<vertex*, vertex*>& path)
+{
+	if(!yet_to_explore.empty()) // our 'stack' still has depth
+	{
+		vertex *w = yet_to_explore.back(); // take the top and make it a vertex
+		yet_to_explore.pop_back(); // pop the 'stack'
+
+		if(w->get_city_name() == u->get_city_name()) // if this is our destination return true
+		{
+			return true;
+		}
+		else
+		{
+			vector<vertex*>::iterator edge_city;
+
+			for(edge_city = edges[w].begin(); edge_city != edges[w].end(); ++edge_city)
+			{
+				vertex* neighbor = *edge_city;
+
+				if(visited[neighbor] == false)
+				{
+					yet_to_explore.push_back(neighbor);
+					visited[neighbor]=true;
+					path[neighbor] = w;
+				}
+
+			}
+			return depth_first_search(u, visited,yet_to_explore,path);
+		}
+	}
+	return false;
+}
+
+bool graph::breadth_first_search(vertex* u, map<vertex*, bool>& visited, deque<vertex*>& yet_to_explore, map<vertex*, vertex*>& path)
+{
+	if(!yet_to_explore.empty()) // our que is not empty
+	{
+		vertex *w = yet_to_explore.front(); // add next in que to a vertex
+		yet_to_explore.pop_front(); // pop the front of the que
+
+		if(w->get_city_name() == u->get_city_name())
+		{
+			return true;
+		}
+		else
+		{
+			vector<vertex*>::iterator edge_city;
+
+			for(edge_city = edges[w].begin(); edge_city != edges[w].end(); ++edge_city)
+			{
+				vertex* neighbor = *edge_city;
+
+				if(visited[neighbor] == false)
+				{
+					yet_to_explore.push_back(neighbor);
+					visited[neighbor] = true;
+					path[neighbor] = w;
+				}
+			}
+			return breadth_first_search(u, visited,yet_to_explore,path);
+		}
+	}
+	return false;
+}
